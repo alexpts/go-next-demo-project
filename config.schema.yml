@@ -1,0 +1,73 @@
+---
+$schema: https://json-schema.org/draft-07/schema
+title: Schema for `next` app router
+type: object
+additionalProperties: false
+"patternProperties": {
+  "^dev-": {},
+}
+minProperties: 1
+required: [version]
+properties:
+  version:
+    description: configuration version
+    type: string
+    default: '0.0.1'
+  layers:
+    type: array
+    items:
+      $ref: "#/definitions/next/layer"
+  http:
+    $ref: "#/definitions/next/http"
+
+definitions:
+  next:
+    http:
+      type: object
+      additionalProperties: false
+      required: [ host, port ]
+      properties:
+        host:
+          type: string
+          examples:
+            - "127.0.0.1"
+        port:
+          type: integer
+          minimum: 0
+          maximum: 65535
+    layer:
+      title: Layer schema
+      description: Конфигурация слоя
+      type: object
+      additionalProperties: false
+      required: [ action ]
+      properties:
+        path:
+          description: Путь для матчина слоя
+          type: string
+          examples:
+            - '/'
+            - '/about/'
+            - "/hello/{name}/"
+            - "/post/{id:\d+}/"
+        priority:
+          title: Приоритет слоя
+          description: Чем ни больше число приоритета,тем раьне сработает слой
+          type: integer
+          format: int64
+          default: 0
+        method:
+          description: HTTP метод для матчинга слоя
+          type: string
+          examples:
+            - GET
+            - GET|POST
+        name:
+          title: Уникальное имя слоя для отладки и конфига
+          type: string
+        action:
+          title: Ключ на карту функций-обработчиков / контроллеров
+          type: string
+        description:
+          title: Описание слоя/обработчика
+          type: string

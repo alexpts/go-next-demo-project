@@ -1,0 +1,41 @@
+version: 0.0.1
+
+http:
+  host: 127.0.0.1
+  port: 3000
+
+layers:
+  # middlewares
+  - action: otherwise
+    priority: -1000 # fallback обработчик
+
+  # actions
+  - path: /
+    action: mainPage
+    priority: 0
+
+  - path: /page2/
+    method: GET
+    action: mainPage2
+
+  - path: /hello/{name}/
+    action: hello
+
+  # pprof
+  - path: /debug/pprof/
+    action: /debug/pprof/
+
+  - path: /debug/pprof/{slug}
+    action: /debug/pprof/
+
+  - path: /debug/pprof/cmdline/
+    action: /debug/pprof/cmdline/
+
+  - path: /debug/pprof/profile/
+    action: /debug/pprof/profile/
+
+  - path: /debug/pprof/symbol/
+    action: /debug/pprof/symbol/
+
+  - path: /debug/pprof/trace/
+    action: /debug/pprof/trace/
