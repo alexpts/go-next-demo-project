@@ -4,18 +4,19 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/alexpts/go-next/next"
 	"github.com/valyala/fasthttp"
 
 	"next-project/internal/app/config"
 	"next-project/internal/app/router"
+	"next-project/internal/di"
 )
 
 func main() {
 	conf := config.Load("./config.yml")
+	container := di.Container{}
+	app := container.GetNextMicroApp()
 
-	app := next.NewApp()
-	for _, layer := range router.FactoryLayers(conf.Layers) {
+	for _, layer := range router.FactoryLayers(conf.Layers, container.GetActionsMap()) {
 		app.AddLayer(layer)
 	}
 
@@ -29,6 +30,7 @@ func main() {
 		DisableHeaderNamesNormalizing: true,
 	}
 
-	fmt.Println("Starting http server on :3000")
-	_ = server.ListenAndServe(conf.Http.Host + ":" + strconv.Itoa(conf.Http.Port))
+	bindAddress := conf.Http.Host + ":" + strconv.Itoa(conf.Http.Port)
+	fmt.Println(fmt.Sprintf("Starting http server on %s", bindAddress))
+	_ = server.ListenAndServe(bindAddress)
 }
